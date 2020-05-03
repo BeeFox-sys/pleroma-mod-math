@@ -4,7 +4,7 @@ this mod adds LaTeX to pleroma. It should be more or less compatible with Misske
 
 ## Installation
 
-just clone this repository into your pleroma-mods folder
+just clone this repository into your pleroma-mods folder and add "math" to your pleroma-mod-loader config
 
 ## Configuration
 
