@@ -11,8 +11,20 @@ function PleromaModMath () {
       }
     },
     matcher: [
-      [ "<code>", "<\\/code>", "<code>", "</code>", ".*\\\\.*" ],
-      [ "\\\\\\(", "\\\\\\)", "\\(", "\\)", ".+" ]
+      {
+        regex: "<code>(?:(?!<\\/code>).)+\\\\(?:(?!<\\/code>).)+<\\/code>",
+        replace: [
+          { src: "<code>", to: "" },
+          { src: "</code>", to: "" }
+        ]
+      },
+      {
+        regex: "\\\\\\((?:(?!\\\\\\)).)+\\\\\\)",
+        replace: [
+          { src: "\\(", to: "" },
+          { src: "\\)", to: "" }
+        ]
+      }
     ]
   };
   this.ready = false;
@@ -20,7 +32,7 @@ function PleromaModMath () {
 [
   function onMutation (mutation) {
     if (mutation.target.querySelector) {
-      const statuses = mutation.target.querySelectorAll(".status-content");
+      const statuses = document.querySelectorAll(".status-content");
       for (const stat of statuses) {
         if (
           this.ready &&
@@ -28,14 +40,17 @@ function PleromaModMath () {
           stat.innerHTML
         ) {
           for (const pattern of this.config.matcher) {
-            const regex = new RegExp(pattern[0] + "(?:(?!" + pattern[1] + ")" + pattern[4] + ")" + pattern[1], "gi");
+            const regex = new RegExp(pattern.regex, "gi");
+            console.log(regex, stat.innerHTML);
             const matches = stat.innerHTML.match(regex);
             if (matches) {
               for (const match of matches) {
                 try {
                   const domParser = new DOMParser();
-                  const cleaned = domParser.parseFromString(match, "text/html").body.textContent.replace(pattern[2], "").replace(pattern[3], "");
-                  console.log(cleaned);
+                  let cleaned = domParser.parseFromString(match, "text/html").body.textContent;
+                  for (let replace of pattern.replace) {
+                    cleaned = cleaned.replace(replace.src, replace.to);
+                  }
                   const rendered = katex.renderToString(cleaned, this.config.katex);
                   stat.innerHTML = stat.innerHTML.replace(match, rendered);
                 } catch (e) {
@@ -54,7 +69,6 @@ function PleromaModMath () {
     PleromaModLoader.includeModCss("pleroma-mod-math/" + this.config.stylesheet);
     PleromaModLoader.includeModCss("pleroma-mod-math/katex.min.css");
     PleromaModLoader.includeModScript("pleroma-mod-math/katex.min.js").then(() => {
-      console.log("katex loaded");
       this.ready = true;
     });
   }
