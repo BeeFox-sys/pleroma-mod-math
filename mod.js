@@ -65,6 +65,22 @@ function PleromaModMath () {
     }
   },
 
+  function onDestroy () {
+    const scripts = document.querySelectorAll("script[src]");
+    for (const script of scripts) {
+      if (script.src.includes("pleroma-mod-math") && !script.src.endsWith("mod.js")) {
+        script.remove();
+      }
+    }
+
+    const links = document.querySelectorAll("link[rel=\"stylesheet\"]");
+    for (const link of links) {
+      if (link.href.includes("pleroma-mod-math")) {
+        link.remove();
+      }
+    }
+  },
+
   function run () {
     PleromaModLoader.includeModCss("pleroma-mod-math/" + this.config.stylesheet);
     PleromaModLoader.includeModCss("pleroma-mod-math/katex.min.css");
