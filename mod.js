@@ -41,7 +41,6 @@ function PleromaModMath () {
         ) {
           for (const pattern of this.config.matcher) {
             const regex = new RegExp(pattern.regex, "gi");
-            console.log(regex, stat.innerHTML);
             const matches = stat.innerHTML.match(regex);
             if (matches) {
               for (const match of matches) {
