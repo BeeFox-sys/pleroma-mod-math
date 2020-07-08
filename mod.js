@@ -36,7 +36,10 @@ function PleromaModMath () {
       for (const stat of statuses) {
         if (
           this.ready &&
-          !stat.classList.contains("mathed") &&
+          (
+            !stat.classList.contains("mathed") ||
+            stat.parentNode.parentNode.classList.contains("preview-status")
+          ) &&
           stat.innerHTML
         ) {
           for (const pattern of this.config.matcher) {
