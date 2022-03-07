@@ -32,7 +32,7 @@ function PleromaModMath () {
 [
   function onMutation (mutation) {
     if (mutation.target.querySelector) {
-      const statuses = document.querySelectorAll(".status-content");
+      const statuses = document.querySelectorAll(".StatusBody");
       for (const stat of statuses) {
         if (
           this.ready &&
@@ -43,7 +43,7 @@ function PleromaModMath () {
           stat.innerHTML
         ) {
           for (const pattern of this.config.matcher) {
-            const regex = new RegExp(pattern.regex, "gi");
+            const regex = new RegExp(pattern.regex, "gis");
             const matches = stat.innerHTML.match(regex);
             if (matches) {
               for (const match of matches) {
